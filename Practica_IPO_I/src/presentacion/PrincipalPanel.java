@@ -10,6 +10,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
 import java.awt.BorderLayout;
@@ -44,11 +45,13 @@ import java.awt.event.FocusEvent;
 import java.awt.FlowLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 @SuppressWarnings("unused")
 public class PrincipalPanel {
 
-	private JFrame frmFisiplus;
+	private JFrame frmFisiplus, frame;
 	private JMenuBar menuBar;
 	private JMenu mnArchivo;
 	private JMenu mnEstadisticas;
@@ -83,6 +86,12 @@ public class PrincipalPanel {
 	private JButton btnProgramarPruebas;
 	private JButton btnConsultarHistorial_1;
 	private JButton btnEliminarPaciente;
+	private JButton btnConsultarHistorial_2;
+	private JButton btnEliminarHistorial;
+	private JButton btnAnadirPersonal;
+	private JButton btnEditarDatos;
+	private JButton btnVerLogPersonal;
+	private JButton btnEliminarPersonal;
 
 	/**
 	 * Launch the application.
@@ -112,7 +121,9 @@ public class PrincipalPanel {
 	 */
 	private void initialize() {
 		frmFisiplus = new JFrame();
-		frmFisiplus.setIconImage(Toolkit.getDefaultToolkit().getImage(PrincipalPanel.class.getResource("/Recursos/Pacientes.png")));
+		frmFisiplus.addWindowListener(new FrmFisiplusWindowListener());
+		frmFisiplus.setResizable(false);
+		frmFisiplus.setIconImage(Toolkit.getDefaultToolkit().getImage(PrincipalPanel.class.getResource("/Recursos/hospital-icon.png")));
 		frmFisiplus.setTitle("Fisiplus");
 		frmFisiplus.setBounds(100, 100, 800, 600);
 		frmFisiplus.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -133,6 +144,7 @@ public class PrincipalPanel {
 				}
 				{
 					mntmSalir = new JMenuItem("Salir");
+					mntmSalir.addActionListener(new MntmSalirActionListener());
 					mntmSalir.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/salir.png")));
 					mnArchivo.add(mntmSalir);
 				}
@@ -161,6 +173,7 @@ public class PrincipalPanel {
 				}
 				{
 					mntmAcerca = new JMenuItem("Acerca de ...");
+					mntmAcerca.addActionListener(new MntmAcercaActionListener());
 					mntmAcerca.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Acerca_de.png")));
 					mnAyuda.add(mntmAcerca);
 				}
@@ -277,30 +290,35 @@ public class PrincipalPanel {
 				{
 					pnlAcciones_Pacientes = new JPanel();
 					pnlAcciones.add(pnlAcciones_Pacientes, "Acciones_Pacientes");
-					pnlAcciones_Pacientes.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 					{
 						btnAñadirPacientes = new JButton("Añadir Pacientes");
+						btnAñadirPacientes.setBounds(10, 109, 185, 41);
 						btnAñadirPacientes.addActionListener(new BtnAñadirPacientesActionListener());
+						pnlAcciones_Pacientes.setLayout(null);
 						btnAñadirPacientes.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Add_patient.png")));
 						pnlAcciones_Pacientes.add(btnAñadirPacientes);
 					}
 					{
 						btnConsultarResultados = new JButton("Consultar Resultados");
+						btnConsultarResultados.setBounds(557, 11, 185, 41);
 						btnConsultarResultados.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/See_icon.png")));
 						pnlAcciones_Pacientes.add(btnConsultarResultados);
 					}
 					{
 						btnConsultarHistorial_1 = new JButton("Consultar Historial");
+						btnConsultarHistorial_1.setBounds(10, 11, 185, 41);
 						btnConsultarHistorial_1.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Folder Open.png")));
 						pnlAcciones_Pacientes.add(btnConsultarHistorial_1);
 					}
 					{
 						btnProgramarPruebas = new JButton("Programar Pruebas");
+						btnProgramarPruebas.setBounds(281, 11, 185, 41);
 						btnProgramarPruebas.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/ico-calendar.png")));
 						pnlAcciones_Pacientes.add(btnProgramarPruebas);
 					}
 					{
 						btnEliminarPaciente = new JButton("Eliminar Paciente");
+						btnEliminarPaciente.setBounds(557, 109, 185, 41);
 						btnEliminarPaciente.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Light_Delete_user.png")));
 						pnlAcciones_Pacientes.add(btnEliminarPaciente);
 					}
@@ -308,10 +326,49 @@ public class PrincipalPanel {
 				{
 					pnlAcciones_Historias = new JPanel();
 					pnlAcciones.add(pnlAcciones_Historias, "Acciones_Historias");
+					pnlAcciones_Historias.setLayout(null);
+					{
+						btnConsultarHistorial_2 = new JButton("Consultar Historial");
+						btnConsultarHistorial_2.setBounds(10, 11, 185, 41);
+						btnConsultarHistorial_2.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Folder Open.png")));
+						pnlAcciones_Historias.add(btnConsultarHistorial_2);
+					}
+					{
+						btnEliminarHistorial = new JButton("Eliminar Historial");
+						btnEliminarHistorial.setBounds(557, 109, 185, 41);
+						btnEliminarHistorial.addActionListener(new BtnEliminarHistorialActionListener());
+						btnEliminarHistorial.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Trash.png")));
+						pnlAcciones_Historias.add(btnEliminarHistorial);
+					}
 				}
 				{
 					pnlAcciones_Personal = new JPanel();
 					pnlAcciones.add(pnlAcciones_Personal, "Acciones_Personal");
+					pnlAcciones_Personal.setLayout(null);
+					{
+						btnAnadirPersonal = new JButton("Añadir Personal");
+						btnAnadirPersonal.setBounds(10, 109, 185, 41);
+						btnAnadirPersonal.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Add_patient.png")));
+						pnlAcciones_Personal.add(btnAnadirPersonal);
+					}
+					{
+						btnEditarDatos = new JButton("Editar Datos");
+						btnEditarDatos.setBounds(281, 11, 185, 41);
+						btnEditarDatos.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/File_edit.png")));
+						pnlAcciones_Personal.add(btnEditarDatos);
+					}
+					{
+						btnVerLogPersonal = new JButton("Ver Log Personal");
+						btnVerLogPersonal.setBounds(10, 11, 185, 41);
+						btnVerLogPersonal.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/See_icon.png")));
+						pnlAcciones_Personal.add(btnVerLogPersonal);
+					}
+					{
+						btnEliminarPersonal = new JButton("Eliminar Personal");
+						btnEliminarPersonal.setBounds(557, 109, 185, 41);
+						btnEliminarPersonal.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Light_Delete_user.png")));
+						pnlAcciones_Personal.add(btnEliminarPersonal);
+					}
 				}
 			}
 		}
@@ -337,8 +394,28 @@ public class PrincipalPanel {
 	private class TabbedPanelPersonalComponentListener extends ComponentAdapter {
 		public void componentShown(ComponentEvent e) {
 			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
-			cl.show(pnlAcciones, "Acciones_Historias");
+			cl.show(pnlAcciones, "Acciones_Personal");
 		}
 	}
-	
+	private class BtnEliminarHistorialActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent arg0) {
+		}
+	}
+	private class FrmFisiplusWindowListener extends WindowAdapter {
+		public void windowClosing(WindowEvent arg0) {
+		 JOptionPane.showMessageDialog(frame, "Gracias por utilizar nuestra aplicación", "Cerrar la aplicación", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	private class MntmSalirActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent arg0) {
+			JOptionPane.showMessageDialog(frame, "Gracias por utilizar nuestra aplicación", "Cerrar la aplicación", JOptionPane.INFORMATION_MESSAGE);
+			frmFisiplus.dispose();
+		}
+	}
+	private class MntmAcercaActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			String autor = "\n Alejandro Ferro Bejereano \n                     y \n Javier García Ceca";
+			JOptionPane.showMessageDialog(frame, "            Fisiplus v 1.0 \n Realizado por: " + autor, "Acerca de ...",JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
 }
