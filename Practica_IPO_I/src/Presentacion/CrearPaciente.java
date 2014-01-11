@@ -3,26 +3,38 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JDesktopPane;
+
 import java.awt.FlowLayout;
+
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JFormattedTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+
 import java.awt.Toolkit;
+
 import javax.swing.ImageIcon;
+
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class CrearPaciente {
 
-	private JFrame frmCrearPaciente;
+	private JFrame frmCrearPaciente,frame;
 	private final JPanel pnlDatos = new JPanel();
 	private final JPanel pnlDireccion = new JPanel();
 	private final JPanel pnlMutua = new JPanel();
@@ -69,7 +81,7 @@ public class CrearPaciente {
 			public void run() {
 				try {
 					CrearPaciente window = new CrearPaciente();
-					window.frmCrearPaciente.setVisible(true);
+					window.getFrmCrearPaciente().setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -106,16 +118,16 @@ public class CrearPaciente {
 		txtApellidos.setColumns(10);
 		txtNombre.setBounds(135, 29, 176, 20);
 		txtNombre.setColumns(10);
-		frmCrearPaciente = new JFrame();
-		frmCrearPaciente.setIconImage(Toolkit.getDefaultToolkit().getImage(CrearPaciente.class.getResource("/Recursos/hospital-icon.png")));
-		frmCrearPaciente.setTitle("Crear Paciente - Fisiplus");
-		frmCrearPaciente.setBounds(100, 100, 860, 460);
-		frmCrearPaciente.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmCrearPaciente.getContentPane().setLayout(null);
+		setFrmCrearPaciente(new JFrame());
+		getFrmCrearPaciente().setIconImage(Toolkit.getDefaultToolkit().getImage(CrearPaciente.class.getResource("/Recursos/hospital-icon.png")));
+		getFrmCrearPaciente().setTitle("Crear Paciente - Fisiplus");
+		getFrmCrearPaciente().setBounds(100, 100, 860, 460);
+		getFrmCrearPaciente().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getFrmCrearPaciente().getContentPane().setLayout(null);
 		{
 			pnlDatos.setBorder(new TitledBorder(null, "Datos personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnlDatos.setBounds(10, 11, 506, 337);
-			frmCrearPaciente.getContentPane().add(pnlDatos);
+			getFrmCrearPaciente().getContentPane().add(pnlDatos);
 		}
 		pnlDatos.setLayout(null);
 		{
@@ -197,7 +209,7 @@ public class CrearPaciente {
 		{
 			pnlDireccion.setBorder(new TitledBorder(null, "Direcci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnlDireccion.setBounds(526, 11, 308, 173);
-			frmCrearPaciente.getContentPane().add(pnlDireccion);
+			getFrmCrearPaciente().getContentPane().add(pnlDireccion);
 		}
 		pnlDireccion.setLayout(null);
 		{
@@ -235,7 +247,7 @@ public class CrearPaciente {
 		{
 			pnlMutua.setBorder(new TitledBorder(null, "Mutua", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnlMutua.setBounds(526, 212, 308, 136);
-			frmCrearPaciente.getContentPane().add(pnlMutua);
+			getFrmCrearPaciente().getContentPane().add(pnlMutua);
 		}
 		pnlMutua.setLayout(null);
 		{
@@ -262,18 +274,41 @@ public class CrearPaciente {
 		ftxtFechaAlta.setBounds(108, 61, 126, 20);
 		pnlMutua.add(ftxtFechaAlta);
 		{
+			btnCancelar.addActionListener(new BtnCancelarActionListener());
 			btnCancelar.setMinimumSize(new Dimension(63, 23));
 			btnCancelar.setMaximumSize(new Dimension(63, 23));
 			btnCancelar.setIcon(new ImageIcon(CrearPaciente.class.getResource("/Recursos/back_button.png")));
 			btnCancelar.setBounds(10, 359, 133, 41);
-			frmCrearPaciente.getContentPane().add(btnCancelar);
+			getFrmCrearPaciente().getContentPane().add(btnCancelar);
 		}
 		{
 			btnAceptar.setIcon(new ImageIcon(CrearPaciente.class.getResource("/Recursos/accept.png")));
 			btnAceptar.setMinimumSize(new Dimension(63, 23));
 			btnAceptar.setMaximumSize(new Dimension(63, 23));
 			btnAceptar.setBounds(701, 359, 133, 41);
-			frmCrearPaciente.getContentPane().add(btnAceptar);
+			getFrmCrearPaciente().getContentPane().add(btnAceptar);
+		}
+	}
+
+	public JFrame getFrmCrearPaciente() {
+		return frmCrearPaciente;
+	}
+
+	public void setFrmCrearPaciente(JFrame frmCrearPaciente) {
+		this.frmCrearPaciente = frmCrearPaciente;
+		frmCrearPaciente.addWindowListener(new FrmCrearPacienteWindowListener());
+	}
+	private class BtnCancelarActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			/* Llamamos al panel principal */
+			PrincipalPanel panel = new PrincipalPanel();
+			panel.getFrmFisiplus().setVisible(true);
+			frmCrearPaciente.dispose();
+		}
+	}
+	private class FrmCrearPacienteWindowListener extends WindowAdapter {
+		public void windowClosing(WindowEvent e) {
+			JOptionPane.showMessageDialog(frame, "Gracias por utilizar nuestra aplicación", "Cerrar la aplicación", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }
