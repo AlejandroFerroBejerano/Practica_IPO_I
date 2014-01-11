@@ -49,6 +49,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
 
 @SuppressWarnings("unused")
 public class PrincipalPanel {
@@ -77,9 +79,6 @@ public class PrincipalPanel {
 	private JLabel lblUsertimesession;
 	private JPanel pnlPrincipalContainer;
 	private JTabbedPane tabbedPanelConatiner;
-	private JTabbedPane tabbedPanelPacientes;
-	private JTabbedPane tabbedPaneLHistorias;
-	private JTabbedPane tabbedPanelPersonal;
 	private JPanel pnlAcciones;
 	private JPanel pnlAcciones_Pacientes;
 	private JPanel pnlAcciones_Historias;
@@ -95,6 +94,10 @@ public class PrincipalPanel {
 	private JButton btnEditarDatos;
 	private JButton btnVerLogPersonal;
 	private JButton btnEliminarPersonal;
+	private JScrollPane scrollPanePacientes;
+	private JTable table;
+	private JScrollPane scrollPaneHistoriales;
+	private JScrollPane scrollPanePersonal;
 
 	/**
 	 * Launch the application.
@@ -269,19 +272,23 @@ public class PrincipalPanel {
 				tabbedPanelConatiner.setBounds(10, 11, 764, 264);
 				pnlPrincipalContainer.add(tabbedPanelConatiner);
 				{
-					tabbedPanelPacientes = new JTabbedPane(JTabbedPane.TOP);
-					tabbedPanelPacientes.addComponentListener(new TabbedPanelPacientesComponentListener());
-					tabbedPanelConatiner.addTab("Pacientes", new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Pacientes.png")), tabbedPanelPacientes, null);
+					scrollPanePacientes = new JScrollPane();
+					scrollPanePacientes.addComponentListener(new ScrollPaneComponentListener());
+					tabbedPanelConatiner.addTab("Pacientes", new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Pacientes.png")), scrollPanePacientes, null);
+					{
+						table = new JTable();
+						scrollPanePacientes.setViewportView(table);
+					}
 				}
 				{
-					tabbedPaneLHistorias = new JTabbedPane(JTabbedPane.TOP);
-					tabbedPaneLHistorias.addComponentListener(new TabbedPaneLHistoriasComponentListener());
-					tabbedPanelConatiner.addTab("Historias", new ImageIcon(PrincipalPanel.class.getResource("/Recursos/cargarComentarios.png")), tabbedPaneLHistorias, null);
+					scrollPaneHistoriales = new JScrollPane();
+					scrollPaneHistoriales.addComponentListener(new ScrollPaneHistorialesComponentListener());
+					tabbedPanelConatiner.addTab("Historiales", new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Folder Open.png")), scrollPaneHistoriales, null);
 				}
 				{
-					tabbedPanelPersonal = new JTabbedPane(JTabbedPane.TOP);
-					tabbedPanelPersonal.addComponentListener(new TabbedPanelPersonalComponentListener());
-					tabbedPanelConatiner.addTab("Personal", new ImageIcon(PrincipalPanel.class.getResource("/Recursos/doctor.png")), tabbedPanelPersonal, null);
+					scrollPanePersonal = new JScrollPane();
+					scrollPanePersonal.addComponentListener(new ScrollPanePersonalComponentListener());
+					tabbedPanelConatiner.addTab("Personal", new ImageIcon(PrincipalPanel.class.getResource("/Recursos/doctor.png")), scrollPanePersonal, null);
 				}
 			}
 			{
@@ -396,25 +403,6 @@ public class PrincipalPanel {
 			frmFisiplus.setVisible(false);
 		}
 	}
-
-	private class TabbedPanelPacientesComponentListener extends ComponentAdapter {
-		public void componentShown(ComponentEvent e) {
-			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
-			cl.show(pnlAcciones, "Acciones_Pacientes");
-		}
-	}
-	private class TabbedPaneLHistoriasComponentListener extends ComponentAdapter {
-		public void componentShown(ComponentEvent e) {
-			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
-			cl.show(pnlAcciones, "Acciones_Historias");
-		}
-	}
-	private class TabbedPanelPersonalComponentListener extends ComponentAdapter {
-		public void componentShown(ComponentEvent e) {
-			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
-			cl.show(pnlAcciones, "Acciones_Personal");
-		}
-	}
 	private class BtnEliminarHistorialActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 		}
@@ -444,6 +432,24 @@ public class PrincipalPanel {
 			
 			/* Ocultamos el formulario principal */
 			frmFisiplus.setVisible(false);
+		}
+	}
+	private class ScrollPaneComponentListener extends ComponentAdapter {
+		public void componentShown(ComponentEvent e) {
+			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
+			cl.show(pnlAcciones, "Acciones_Pacientes");
+		}
+	}
+	private class ScrollPaneHistorialesComponentListener extends ComponentAdapter {
+		public void componentShown(ComponentEvent e) {
+			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
+			cl.show(pnlAcciones, "Acciones_Historias");
+		}
+	}
+	private class ScrollPanePersonalComponentListener extends ComponentAdapter {
+		public void componentShown(ComponentEvent e) {
+			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
+			cl.show(pnlAcciones, "Acciones_Personal");
 		}
 	}
 }
