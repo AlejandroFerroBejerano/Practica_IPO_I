@@ -3,26 +3,38 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JDesktopPane;
+
 import java.awt.FlowLayout;
+
 import javax.swing.border.TitledBorder;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JFormattedTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+
 import java.awt.Toolkit;
+
 import javax.swing.ImageIcon;
+
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class CrearFisioterapeuta {
 
-	private JFrame frmCrearFisioterapeuta;
+	private JFrame frmCrearFisioterapeuta, frame;
 	private final JPanel pnlDatos = new JPanel();
 	private final JPanel pnlDireccion = new JPanel();
 	private final JPanel pnlMutua = new JPanel();
@@ -69,7 +81,7 @@ public class CrearFisioterapeuta {
 			public void run() {
 				try {
 					CrearFisioterapeuta window = new CrearFisioterapeuta();
-					window.frmCrearFisioterapeuta.setVisible(true);
+					window.getFrmCrearFisioterapeuta().setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -106,17 +118,17 @@ public class CrearFisioterapeuta {
 		txtApellidos.setColumns(10);
 		txtNombre.setBounds(135, 29, 159, 20);
 		txtNombre.setColumns(10);
-		frmCrearFisioterapeuta = new JFrame();
-		frmCrearFisioterapeuta.setResizable(false);
-		frmCrearFisioterapeuta.setIconImage(Toolkit.getDefaultToolkit().getImage(CrearFisioterapeuta.class.getResource("/Recursos/hospital-icon.png")));
-		frmCrearFisioterapeuta.setTitle("Crear Fisioterapeuta - Fisiplus");
-		frmCrearFisioterapeuta.setBounds(100, 100, 860, 460);
-		frmCrearFisioterapeuta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmCrearFisioterapeuta.getContentPane().setLayout(null);
+		setFrmCrearFisioterapeuta(new JFrame());
+		getFrmCrearFisioterapeuta().setResizable(false);
+		getFrmCrearFisioterapeuta().setIconImage(Toolkit.getDefaultToolkit().getImage(CrearFisioterapeuta.class.getResource("/Recursos/hospital-icon.png")));
+		getFrmCrearFisioterapeuta().setTitle("Crear Fisioterapeuta - Fisiplus");
+		getFrmCrearFisioterapeuta().setBounds(100, 100, 860, 460);
+		getFrmCrearFisioterapeuta().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getFrmCrearFisioterapeuta().getContentPane().setLayout(null);
 		{
 			pnlDatos.setBorder(new TitledBorder(null, "Datos personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnlDatos.setBounds(10, 11, 516, 300);
-			frmCrearFisioterapeuta.getContentPane().add(pnlDatos);
+			getFrmCrearFisioterapeuta().getContentPane().add(pnlDatos);
 		}
 		pnlDatos.setLayout(null);
 		{
@@ -198,7 +210,7 @@ public class CrearFisioterapeuta {
 		{
 			pnlDireccion.setBorder(new TitledBorder(null, "Direcci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnlDireccion.setBounds(536, 11, 308, 153);
-			frmCrearFisioterapeuta.getContentPane().add(pnlDireccion);
+			getFrmCrearFisioterapeuta().getContentPane().add(pnlDireccion);
 		}
 		pnlDireccion.setLayout(null);
 		{
@@ -236,7 +248,7 @@ public class CrearFisioterapeuta {
 		{
 			pnlMutua.setBorder(new TitledBorder(null, "Mutua", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnlMutua.setBounds(536, 175, 308, 136);
-			frmCrearFisioterapeuta.getContentPane().add(pnlMutua);
+			getFrmCrearFisioterapeuta().getContentPane().add(pnlMutua);
 		}
 		pnlMutua.setLayout(null);
 		{
@@ -265,16 +277,39 @@ public class CrearFisioterapeuta {
 			pnlMutua.add(txtNumeroTarjeta);
 		}
 		{
+			btnCancelar.addActionListener(new BtnCancelarActionListener());
 			btnCancelar.setMinimumSize(new Dimension(63, 23));
 			btnCancelar.setMaximumSize(new Dimension(63, 23));
 			btnCancelar.setIcon(new ImageIcon(CrearFisioterapeuta.class.getResource("/Recursos/back_button.png")));
 			btnCancelar.setBounds(10, 366, 133, 41);
-			frmCrearFisioterapeuta.getContentPane().add(btnCancelar);
+			getFrmCrearFisioterapeuta().getContentPane().add(btnCancelar);
 		}
 		{
 			btnAceptar.setIcon(new ImageIcon(CrearFisioterapeuta.class.getResource("/Recursos/accept.png")));
 			btnAceptar.setBounds(711, 366, 133, 41);
-			frmCrearFisioterapeuta.getContentPane().add(btnAceptar);
+			getFrmCrearFisioterapeuta().getContentPane().add(btnAceptar);
+		}
+	}
+
+	public JFrame getFrmCrearFisioterapeuta() {
+		return frmCrearFisioterapeuta;
+	}
+
+	public void setFrmCrearFisioterapeuta(JFrame frmCrearFisioterapeuta) {
+		this.frmCrearFisioterapeuta = frmCrearFisioterapeuta;
+		frmCrearFisioterapeuta.addWindowListener(new FrmCrearFisioterapeutaWindowListener());
+	}
+	private class BtnCancelarActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			/* Llamamos al panel principal */
+			PrincipalPanel panel = new PrincipalPanel();
+			panel.getFrmFisiplus().setVisible(true);
+			frmCrearFisioterapeuta.dispose();
+		}
+	}
+	private class FrmCrearFisioterapeutaWindowListener extends WindowAdapter {
+		public void windowClosing(WindowEvent e) {
+			JOptionPane.showMessageDialog(frame, "Gracias por utilizar nuestra aplicación", "Cerrar la aplicación", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }
