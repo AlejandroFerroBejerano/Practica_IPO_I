@@ -102,7 +102,7 @@ public class PrincipalPanel {
 			public void run() {
 				try {
 					PrincipalPanel window = new PrincipalPanel();
-					window.frmFisiplus.setVisible(true);
+					window.getFrmFisiplus().setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -121,16 +121,16 @@ public class PrincipalPanel {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmFisiplus = new JFrame();
-		frmFisiplus.addWindowListener(new FrmFisiplusWindowListener());
-		frmFisiplus.setResizable(false);
-		frmFisiplus.setIconImage(Toolkit.getDefaultToolkit().getImage(PrincipalPanel.class.getResource("/Recursos/hospital-icon.png")));
-		frmFisiplus.setTitle("Fisiplus");
-		frmFisiplus.setBounds(100, 100, 800, 600);
-		frmFisiplus.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setFrmFisiplus(new JFrame());
+		getFrmFisiplus().addWindowListener(new FrmFisiplusWindowListener());
+		getFrmFisiplus().setResizable(false);
+		getFrmFisiplus().setIconImage(Toolkit.getDefaultToolkit().getImage(PrincipalPanel.class.getResource("/Recursos/hospital-icon.png")));
+		getFrmFisiplus().setTitle("Fisiplus");
+		getFrmFisiplus().setBounds(100, 100, 800, 600);
+		getFrmFisiplus().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		{
 			menuBar = new JMenuBar();
-			frmFisiplus.setJMenuBar(menuBar);
+			getFrmFisiplus().setJMenuBar(menuBar);
 			{
 				mnArchivo = new JMenu("Archivo");
 				menuBar.add(mnArchivo);
@@ -180,11 +180,11 @@ public class PrincipalPanel {
 				}
 			}
 		}
-		frmFisiplus.getContentPane().setLayout(new BorderLayout(0, 0));
+		getFrmFisiplus().getContentPane().setLayout(new BorderLayout(0, 0));
 		{
 			pnlUserSession = new JPanel();
 			pnlUserSession.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Sesi\u00F3n Actual", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-			frmFisiplus.getContentPane().add(pnlUserSession, BorderLayout.NORTH);
+			getFrmFisiplus().getContentPane().add(pnlUserSession, BorderLayout.NORTH);
 			GridBagLayout gbl_pnlUserSession = new GridBagLayout();
 			gbl_pnlUserSession.columnWidths = new int[]{85, 116, 85, 116, 85, 85, 102, 0, 0, 0};
 			gbl_pnlUserSession.rowHeights = new int[]{0, 0};
@@ -260,7 +260,7 @@ public class PrincipalPanel {
 		{
 			pnlPrincipalContainer = new JPanel();
 			pnlPrincipalContainer.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.RAISED, new Color(240, 240, 240), new Color(255, 255, 255), new Color(105, 105, 105), new Color(160, 160, 160)), new LineBorder(new Color(180, 180, 180), 5)));
-			frmFisiplus.getContentPane().add(pnlPrincipalContainer, BorderLayout.CENTER);
+			getFrmFisiplus().getContentPane().add(pnlPrincipalContainer, BorderLayout.CENTER);
 			pnlPrincipalContainer.setLayout(null);
 			{
 				tabbedPanelConatiner = new JTabbedPane(JTabbedPane.TOP);
@@ -375,6 +375,14 @@ public class PrincipalPanel {
 		}
 	}
 	
+	public JFrame getFrmFisiplus() {
+		return frmFisiplus;
+	}
+
+	public void setFrmFisiplus(JFrame frmFisiplus) {
+		this.frmFisiplus = frmFisiplus;
+	}
+
 	private class BtnAñadirPacientesActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 		}
@@ -410,7 +418,7 @@ public class PrincipalPanel {
 	private class MntmSalirActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent arg0) {
 			JOptionPane.showMessageDialog(frame, "Gracias por utilizar nuestra aplicación", "Cerrar la aplicación", JOptionPane.INFORMATION_MESSAGE);
-			frmFisiplus.dispose();
+			getFrmFisiplus().dispose();
 		}
 	}
 	private class MntmAcercaActionListener implements ActionListener {

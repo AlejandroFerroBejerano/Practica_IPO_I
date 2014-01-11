@@ -1,4 +1,4 @@
-package Presentacion;
+package presentacion;
 
 import java.awt.EventQueue;
 
@@ -24,11 +24,14 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingConstants;
 
-import Persistencia.Conexion;
+import persistencia.Conexion;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import javax.swing.ImageIcon;
+import java.awt.Toolkit;
+import java.awt.FlowLayout;
 
 public class LoginForm {
 
@@ -38,7 +41,7 @@ public class LoginForm {
 	private final JLabel lblUsuario = new JLabel("Usuario");
 	private final JLabel lblPassword = new JLabel("Contraseña");
 	private final JLabel lblIdioma = new JLabel("Idioma:");
-	private final JLabel lblLogo = new JLabel("Logo");
+	private final JLabel lblLogo = new JLabel("");
 	private final JComboBox comboBox = new JComboBox();
 	private final JButton btnEntrar = new JButton("Entrar");
 	
@@ -73,49 +76,51 @@ public class LoginForm {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		txtUsuario.setBounds(20, 111, 190, 20);
+		txtUsuario.setBounds(303, 26, 120, 20);
 		txtUsuario.setColumns(10);
 		frmIdentificacinFisiplus = new JFrame();
+		frmIdentificacinFisiplus.setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/Recursos/hospital-icon.png")));
 		frmIdentificacinFisiplus.setResizable(false);
 		frmIdentificacinFisiplus.setTitle("Identificación - Fisiplus");
-		frmIdentificacinFisiplus.setBounds(100, 100, 236, 338);
+		frmIdentificacinFisiplus.setBounds(100, 100, 439, 295);
 		frmIdentificacinFisiplus.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmIdentificacinFisiplus.getContentPane().setLayout(null);
 		{
-			lblUsuario.setBounds(20, 93, 46, 14);
+			lblUsuario.setBounds(219, 29, 56, 14);
 			frmIdentificacinFisiplus.getContentPane().add(lblUsuario);
 		}
 		{
 			frmIdentificacinFisiplus.getContentPane().add(txtUsuario);
 		}
 		{
-			lblPassword.setBounds(20, 153, 74, 14);
+			lblPassword.setBounds(219, 83, 74, 14);
 			frmIdentificacinFisiplus.getContentPane().add(lblPassword);
 		}
 		{
+			txtPassword.setBounds(303, 80, 120, 20);
 			txtPassword.setColumns(10);
-			txtPassword.setBounds(20, 170, 190, 20);
 			frmIdentificacinFisiplus.getContentPane().add(txtPassword);
 		}
 		{
-			lblIdioma.setHorizontalAlignment(SwingConstants.RIGHT);
+			lblIdioma.setBounds(219, 132, 56, 14);
 			lblIdioma.setHorizontalTextPosition(SwingConstants.LEADING);
-			lblIdioma.setBounds(30, 211, 46, 14);
 			frmIdentificacinFisiplus.getContentPane().add(lblIdioma);
 		}
 		{
+			lblLogo.setBounds(10, 0, 210, 256);
+			lblLogo.setIcon(new ImageIcon(LoginForm.class.getResource("/Recursos/icon-lock.png")));
 			lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
-			lblLogo.setBounds(10, 11, 215, 71);
 			frmIdentificacinFisiplus.getContentPane().add(lblLogo);
 		}
 		{
+			comboBox.setBounds(303, 129, 82, 20);
 			comboBox.setModel(new DefaultComboBoxModel(new String[] {"Español", "English"}));
-			comboBox.setBounds(86, 208, 124, 20);
 			frmIdentificacinFisiplus.getContentPane().add(comboBox);
 		}
 		{
+			btnEntrar.setBounds(246, 201, 141, 41);
+			btnEntrar.setIcon(new ImageIcon(LoginForm.class.getResource("/Recursos/Login_in.png")));
 			btnEntrar.addActionListener(new BtnEntrarActionListener());
-			btnEntrar.setBounds(65, 266, 96, 23);
 			frmIdentificacinFisiplus.getContentPane().add(btnEntrar);
 		}
 	}
@@ -165,7 +170,7 @@ public class LoginForm {
 			if (user.equals(txtUsuario.getText()) && password.equals(txtPassword.getText())){
 				/* Llamamos al panel principal */
 				PrincipalPanel panl = new PrincipalPanel();
-				panl.frmFisiplus.setVisible(true);
+				panl.getFrmFisiplus().setVisible(true);
 				
 				/* Ocultamos el formulario de ingreso */
 				frmIdentificacinFisiplus.setVisible(false);

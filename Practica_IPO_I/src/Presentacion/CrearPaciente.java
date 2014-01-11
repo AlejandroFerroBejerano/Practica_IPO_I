@@ -1,4 +1,4 @@
-package Presentacion;
+package presentacion;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -15,6 +15,9 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import java.awt.Toolkit;
+import javax.swing.ImageIcon;
+import java.awt.Dimension;
 
 
 public class CrearPaciente {
@@ -97,20 +100,21 @@ public class CrearPaciente {
 		txtPoblacion.setColumns(10);
 		txtDireccion.setBounds(82, 26, 216, 20);
 		txtDireccion.setColumns(10);
-		txtEmail.setBounds(135, 187, 159, 20);
+		txtEmail.setBounds(135, 187, 176, 20);
 		txtEmail.setColumns(10);
-		txtApellidos.setBounds(135, 61, 159, 20);
+		txtApellidos.setBounds(135, 61, 176, 20);
 		txtApellidos.setColumns(10);
-		txtNombre.setBounds(135, 29, 159, 20);
+		txtNombre.setBounds(135, 29, 176, 20);
 		txtNombre.setColumns(10);
 		frmCrearPaciente = new JFrame();
+		frmCrearPaciente.setIconImage(Toolkit.getDefaultToolkit().getImage(CrearPaciente.class.getResource("/Recursos/hospital-icon.png")));
 		frmCrearPaciente.setTitle("Crear Paciente - Fisiplus");
-		frmCrearPaciente.setBounds(100, 100, 836, 402);
+		frmCrearPaciente.setBounds(100, 100, 860, 460);
 		frmCrearPaciente.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCrearPaciente.getContentPane().setLayout(null);
 		{
 			pnlDatos.setBorder(new TitledBorder(null, "Datos personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnlDatos.setBounds(10, 11, 482, 300);
+			pnlDatos.setBounds(10, 11, 506, 337);
 			frmCrearPaciente.getContentPane().add(pnlDatos);
 		}
 		pnlDatos.setLayout(null);
@@ -132,12 +136,8 @@ public class CrearPaciente {
 		}
 		{
 			lblFoto.setHorizontalAlignment(SwingConstants.CENTER);
-			lblFoto.setBounds(354, 29, 100, 125);
+			lblFoto.setBounds(365, 29, 100, 125);
 			pnlDatos.add(lblFoto);
-		}
-		{
-			btnExaminar.setBounds(354, 172, 100, 32);
-			pnlDatos.add(btnExaminar);
 		}
 		{
 			lblDNI.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -145,7 +145,7 @@ public class CrearPaciente {
 			pnlDatos.add(lblDNI);
 		}
 		{
-			ftxtDNI.setBounds(135, 91, 81, 20);
+			ftxtDNI.setBounds(135, 91, 126, 20);
 			pnlDatos.add(ftxtDNI);
 		}
 		{
@@ -159,7 +159,7 @@ public class CrearPaciente {
 			pnlDatos.add(lblFechaNacimiento);
 		}
 		{
-			ftxtFechaNacimiento.setBounds(135, 218, 81, 20);
+			ftxtFechaNacimiento.setBounds(135, 218, 126, 20);
 			pnlDatos.add(ftxtFechaNacimiento);
 		}
 		{
@@ -168,7 +168,7 @@ public class CrearPaciente {
 			pnlDatos.add(lblTelefono);
 		}
 		{
-			ftxtTelefono.setBounds(135, 249, 81, 20);
+			ftxtTelefono.setBounds(135, 249, 126, 20);
 			pnlDatos.add(ftxtTelefono);
 		}
 		{
@@ -190,8 +190,13 @@ public class CrearPaciente {
 			pnlDatos.add(rdbtnMujer);
 		}
 		{
+			btnExaminar.setBounds(341, 177, 143, 41);
+			pnlDatos.add(btnExaminar);
+			btnExaminar.setIcon(new ImageIcon(CrearPaciente.class.getResource("/Recursos/cargarFoto.png")));
+		}
+		{
 			pnlDireccion.setBorder(new TitledBorder(null, "Direcci\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnlDireccion.setBounds(502, 11, 308, 153);
+			pnlDireccion.setBounds(526, 11, 308, 173);
 			frmCrearPaciente.getContentPane().add(pnlDireccion);
 		}
 		pnlDireccion.setLayout(null);
@@ -229,7 +234,7 @@ public class CrearPaciente {
 		}
 		{
 			pnlMutua.setBorder(new TitledBorder(null, "Mutua", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnlMutua.setBounds(502, 175, 308, 136);
+			pnlMutua.setBounds(526, 212, 308, 136);
 			frmCrearPaciente.getContentPane().add(pnlMutua);
 		}
 		pnlMutua.setLayout(null);
@@ -247,10 +252,6 @@ public class CrearPaciente {
 			pnlMutua.add(lblFechaAlta);
 		}
 		{
-			ftxtFechaAlta.setBounds(108, 61, 93, 20);
-			pnlMutua.add(ftxtFechaAlta);
-		}
-		{
 			lblNumeroTarjeta.setHorizontalAlignment(SwingConstants.RIGHT);
 			lblNumeroTarjeta.setBounds(0, 96, 98, 14);
 			pnlMutua.add(lblNumeroTarjeta);
@@ -258,12 +259,20 @@ public class CrearPaciente {
 		{
 			pnlMutua.add(txtNumeroTarjeta);
 		}
+		ftxtFechaAlta.setBounds(108, 61, 126, 20);
+		pnlMutua.add(ftxtFechaAlta);
 		{
-			btnCancelar.setBounds(10, 322, 115, 23);
+			btnCancelar.setMinimumSize(new Dimension(63, 23));
+			btnCancelar.setMaximumSize(new Dimension(63, 23));
+			btnCancelar.setIcon(new ImageIcon(CrearPaciente.class.getResource("/Recursos/back_button.png")));
+			btnCancelar.setBounds(10, 359, 133, 41);
 			frmCrearPaciente.getContentPane().add(btnCancelar);
 		}
 		{
-			btnAceptar.setBounds(695, 322, 115, 23);
+			btnAceptar.setIcon(new ImageIcon(CrearPaciente.class.getResource("/Recursos/accept.png")));
+			btnAceptar.setMinimumSize(new Dimension(63, 23));
+			btnAceptar.setMaximumSize(new Dimension(63, 23));
+			btnAceptar.setBounds(701, 359, 133, 41);
 			frmCrearPaciente.getContentPane().add(btnAceptar);
 		}
 	}
