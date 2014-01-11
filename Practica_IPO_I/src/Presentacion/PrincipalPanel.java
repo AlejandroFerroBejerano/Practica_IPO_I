@@ -119,6 +119,7 @@ public class PrincipalPanel {
         /**
          * Initialize the contents of the frame.
          */
+        //HOLA
         private void initialize() {
                 setFrmFisiplus(new JFrame());
                 getFrmFisiplus().addWindowListener(new FrmFisiplusWindowListener());
