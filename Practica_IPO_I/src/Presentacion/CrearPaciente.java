@@ -1,4 +1,4 @@
-package presentacion;
+package Presentacion;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -13,6 +13,7 @@ import javax.swing.JDesktopPane;
 import java.awt.FlowLayout;
 
 import javax.swing.border.TitledBorder;
+import javax.swing.text.MaskFormatter;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -25,11 +26,16 @@ import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 
+import Persistencia.Conexion;
+
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
 
 
 public class CrearPaciente {
@@ -47,12 +53,21 @@ public class CrearPaciente {
 	private final JLabel lblFoto = new JLabel("New label");
 	private final JButton btnExaminar = new JButton("Examinar...");
 	private final JLabel lblDNI = new JLabel("DNI:");
-	private final JFormattedTextField ftxtDNI = new JFormattedTextField();
+	
+	/* QUITAMOS EL FINAL PARA MODIFICARLO */
+	private JFormattedTextField ftxtDNI = new JFormattedTextField();
+	
 	private final JLabel lblSexo = new JLabel("Sexo:");
 	private final JLabel lblFechaNacimiento = new JLabel("Fecha Nacimiento:");
-	private final JFormattedTextField ftxtFechaNacimiento = new JFormattedTextField();
+	
+	/* QUITAMOS EL FINAL PARA MODIFICARLO */
+	private  JFormattedTextField ftxtFechaNacimiento = new JFormattedTextField();
+	
 	private final JLabel lblTelefono = new JLabel("Teléfono:");
-	private final JFormattedTextField ftxtTelefono = new JFormattedTextField();
+	
+	/* QUITAMOS EL FINAL PARA MODIFICARLO */
+	private JFormattedTextField ftxtTelefono = new JFormattedTextField();
+	
 	private final JLabel lblCorreoElectronico = new JLabel("Correo electrónico:");
 	private final JTextField txtEmail = new JTextField();
 	private final JRadioButton rdbtnHombre = new JRadioButton("Hombre");
@@ -69,7 +84,10 @@ public class CrearPaciente {
 	private final JLabel lblMutua = new JLabel("Mutua:");
 	private final JTextField txtMutua = new JTextField();
 	private final JLabel lblFechaAlta = new JLabel("Fecha de Alta:");
-	private final JFormattedTextField ftxtFechaAlta = new JFormattedTextField();
+	
+	/* QUITAMOS EL FINAL PARA MODIFICARLO */
+	private JFormattedTextField ftxtFechaAlta = new JFormattedTextField();
+	
 	private final JLabel lblNumeroTarjeta = new JLabel("Número Tarjeta:");
 	private final JTextField txtNumeroTarjeta = new JTextField();
 
@@ -118,6 +136,48 @@ public class CrearPaciente {
 		txtApellidos.setColumns(10);
 		txtNombre.setBounds(135, 29, 176, 20);
 		txtNombre.setColumns(10);
+		
+		/*
+		 * FORMATOS DE LOS CAMPOS 
+		 */
+		/* Modificamos la actuacion del Jformat en el telefono */
+		MaskFormatter formatoTlfno;
+		try{
+			formatoTlfno = new MaskFormatter("'(###')' ### '- ### '- ###");
+			formatoTlfno.setPlaceholderCharacter('*');
+			ftxtTelefono = new JFormattedTextField(formatoTlfno);
+		}catch (ParseException e){
+			e.printStackTrace();
+		}
+		
+		/* Modificamos la actuacion del Jformat en el dni */
+		MaskFormatter formatoDNI;
+		try{
+			formatoDNI = new MaskFormatter("########' -U");
+			formatoDNI.setPlaceholderCharacter('_');
+			ftxtDNI = new JFormattedTextField(formatoDNI);
+		}catch (ParseException e){
+			e.printStackTrace();
+		}
+		/* Modificamos la actuacion del Jformat en la fecha de nacimiento */
+		MaskFormatter formatoFechaNacimiento;
+		try{
+			formatoFechaNacimiento = new MaskFormatter("## / ## / ####");
+			formatoFechaNacimiento.setPlaceholderCharacter('_');
+			ftxtFechaNacimiento = new JFormattedTextField(formatoFechaNacimiento);
+		}catch (ParseException e){
+			e.printStackTrace();
+		}
+		
+		MaskFormatter formatoFechaAlta;
+		try{
+			formatoFechaAlta = new MaskFormatter("## / ## / ####");
+			formatoFechaAlta.setPlaceholderCharacter('_');
+			ftxtFechaAlta = new JFormattedTextField(formatoFechaAlta);
+		}catch (ParseException e){
+			e.printStackTrace();
+		}
+		
 		setFrmCrearPaciente(new JFrame());
 		getFrmCrearPaciente().setIconImage(Toolkit.getDefaultToolkit().getImage(CrearPaciente.class.getResource("/Recursos/hospital-icon.png")));
 		getFrmCrearPaciente().setTitle("Crear Paciente - Fisiplus");
@@ -282,6 +342,7 @@ public class CrearPaciente {
 			getFrmCrearPaciente().getContentPane().add(btnCancelar);
 		}
 		{
+			btnAceptar.addActionListener(new BtnAceptarActionListener());
 			btnAceptar.setIcon(new ImageIcon(CrearPaciente.class.getResource("/Recursos/accept.png")));
 			btnAceptar.setMinimumSize(new Dimension(63, 23));
 			btnAceptar.setMaximumSize(new Dimension(63, 23));
@@ -310,5 +371,40 @@ public class CrearPaciente {
 		public void windowClosing(WindowEvent e) {
 			JOptionPane.showMessageDialog(frame, "Gracias por utilizar nuestra aplicación", "Cerrar la aplicación", JOptionPane.INFORMATION_MESSAGE);
 		}
+	}
+	private class BtnAceptarActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent arg0) {
+			String apellidos = txtApellidos.getText();
+			String nombre = txtNombre.getText();
+			String dni = ftxtDNI.getText();
+			String correo = txtEmail.getText();
+			String fechaNacimiento = ftxtFechaNacimiento.getText();
+			String sexo = "Hombre";
+			String telefono = ftxtTelefono.getText();
+			String direccion = txtDireccion.getText();
+			String poblacion = txtPoblacion.getText();
+			String cp = txtCP.getText();
+			String mutua = txtMutua.getText();
+			String fechaAlta = ftxtFechaAlta.getText();
+			String numTarjeta = txtNumeroTarjeta.getText();
+			
+			crearPaciente(apellidos, nombre, dni, sexo, correo, fechaNacimiento, telefono, direccion, poblacion, cp, mutua, fechaAlta, numTarjeta);
+		}
+	}
+	
+	private void crearPaciente(String apellidos, String nombre, String dni, String sexo, String correo, String fechaNacimiento, String telefono, String direccion,
+			String poblacion, String cp, String mutua, String fechaAlta, String numTarjeta){
+		Conexion con = new Conexion();
+		
+		try{
+			Statement pstm = con.getConnection().createStatement();
+			pstm.executeUpdate("INSERT INTO Pacientes (Nombre, Apellidos, DNI, Sexo, CorreoElectronico, FechaNacimiento, Telefono,"
+					+ "Direccion, Poblacion, CP, Mutua, FechaAlta, NumTarjeta) VALUES ('"+nombre+"','"+apellidos+"','"+dni+"','"+sexo+"','"+correo+"','"+fechaNacimiento+"','"
+					+telefono+"','"+direccion+"','"+poblacion+"','"+cp+"','"+mutua+"','"+fechaAlta+"','"+numTarjeta+"')");
+			pstm.close();
+		}catch(SQLException e){
+			System.out.println(e);
+		}
+		con.desconectar();
 	}
 }

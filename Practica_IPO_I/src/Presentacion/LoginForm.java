@@ -1,4 +1,4 @@
-package presentacion;
+package Presentacion;
 
 import java.awt.EventQueue;
 
@@ -24,12 +24,14 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingConstants;
 
-import persistencia.Conexion;
+import Persistencia.Conexion;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+
 import javax.swing.ImageIcon;
+
 import java.awt.Toolkit;
 import java.awt.FlowLayout;
 
@@ -138,7 +140,7 @@ public class LoginForm {
 		Conexion con = new Conexion();
 		try{
 			
-			PreparedStatement pstm = con.getConnection().prepareStatement("Select count(1) as total FROM Tabla1");
+			PreparedStatement pstm = con.getConnection().prepareStatement("SELECT count(1) as total FROM Fisioterapeutas");
 			ResultSet res = pstm.executeQuery();
 			res.next();
 			registros = res.getInt("total");
@@ -149,11 +151,11 @@ public class LoginForm {
 		Object[][] data = new String[registros][2];
 		
 		/* Realizamos la consulta a la BD */		
-		try{
-			PreparedStatement pstm = con.getConnection().prepareStatement("SELECT Usuario FROM Tabla1");
+		try{	
+			PreparedStatement pstm = con.getConnection().prepareStatement("SELECT Usuario FROM Fisioterapeutas");
 			ResultSet usr = pstm.executeQuery();
 			
-			PreparedStatement pstm2 = con.getConnection().prepareStatement("SELECT Password FROM Tabla1");
+			PreparedStatement pstm2 = con.getConnection().prepareStatement("SELECT Password FROM Fisioterapeutas");
 			ResultSet pwd = pstm2.executeQuery();
 			
 			int i = 0;
@@ -169,6 +171,14 @@ public class LoginForm {
 			}
 			if (user.equals(txtUsuario.getText()) && password.equals(txtPassword.getText())){
 				/* Llamamos al panel principal */
+				try{
+					Conexion con2 = new Conexion();
+					Statement pstmRegistro = con2.getConnection().createStatement();
+					pstmRegistro.executeUpdate("INSERT INTO Registro (Fisio) VALUES ('"+user+"')");
+					pstmRegistro.close();
+				}catch(SQLException e){
+					System.out.println(e);
+				}
 				PrincipalPanel panl = new PrincipalPanel();
 				panl.getFrmFisiplus().setVisible(true);
 				

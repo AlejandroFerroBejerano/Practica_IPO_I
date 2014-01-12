@@ -1,5 +1,5 @@
 
-package presentacion;
+package Presentacion;
 
 import java.awt.EventQueue;
 
@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
+import javax.swing.ListSelectionModel;
 
 import java.awt.BorderLayout;
 
@@ -34,6 +35,10 @@ import javax.swing.UIManager;
 import javax.swing.JTabbedPane;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import java.awt.Toolkit;
 import java.awt.CardLayout;
@@ -49,13 +54,24 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Vector;
+
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+
+import Dominio.Paciente;
+import Dominio.Persona;
+import Persistencia.Conexion;
 
 @SuppressWarnings("unused")
 public class PrincipalPanel {
 
-	private JFrame frmFisiplus, frame;
+	public JFrame frmFisiplus, frame;
 	private CrearPaciente frmCrearPaciente;
 	private JMenuBar menuBar;
 	private JMenu mnArchivo;
@@ -95,9 +111,14 @@ public class PrincipalPanel {
 	private JButton btnVerLogPersonal;
 	private JButton btnEliminarPersonal;
 	private JScrollPane scrollPanePacientes;
-	private JTable table;
 	private JScrollPane scrollPaneHistoriales;
 	private JScrollPane scrollPanePersonal;
+	
+	Conexion con;
+	private final JTable miTabla = new JTable();
+	
+	static ArrayList <Paciente> TPacientes;
+	static ArrayList TUsuarios;
 
 	/**
 	 * Launch the application.
@@ -119,6 +140,7 @@ public class PrincipalPanel {
 	 * Create the application.
 	 */
 	public PrincipalPanel() {
+		TPacientes = leerTodoPacientes();
 		initialize();
 	}
 
@@ -260,6 +282,8 @@ public class PrincipalPanel {
 				gbc_lblUsertimesession.gridx = 7;
 				gbc_lblUsertimesession.gridy = 0;
 				pnlUserSession.add(lblUsertimesession, gbc_lblUsertimesession);
+				
+				CargarUsuario();
 			}
 		}
 		{
@@ -276,8 +300,28 @@ public class PrincipalPanel {
 					scrollPanePacientes.addComponentListener(new ScrollPaneComponentListener());
 					tabbedPanelConatiner.addTab("Pacientes", new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Pacientes.png")), scrollPanePacientes, null);
 					{
-						table = new JTable();
-						scrollPanePacientes.setViewportView(table);
+						
+						miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						miTabla.setRowHeight(30);
+						//NUEVO SETMODEL
+						MiModeloTabla modeloTabla = new MiModeloTabla();
+						miTabla.setModel(modeloTabla);
+						ListSelectionModel rowSM = miTabla.getSelectionModel();
+						
+						rowSM.addListSelectionListener(new ListSelectionListener() {
+							public void valueChanged(ListSelectionEvent e) {
+								ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+									MiModeloTabla modeloTabla = (MiModeloTabla) miTabla.getModel();
+									int n= miTabla.getSelectedRow();
+								}
+						});
+						scrollPanePacientes.setViewportView(miTabla);
+						int id = 0;
+						for(int i = 0; i < TPacientes.size(); i++){
+							Object[] fila= {id, TPacientes.get(i).getApellidos(), TPacientes.get(i).getNombre(), TPacientes.get(i).getDni()};
+							modeloTabla.aniadeFila(fila);
+							id++;
+						}
 					}
 				}
 				{
@@ -328,6 +372,7 @@ public class PrincipalPanel {
 					}
 					{
 						btnEliminarPaciente = new JButton("Eliminar Paciente");
+						btnEliminarPaciente.addActionListener(new BtnEliminarPacienteActionListener());
 						btnEliminarPaciente.setBounds(557, 109, 185, 41);
 						btnEliminarPaciente.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Light_Delete_user.png")));
 						pnlAcciones_Pacientes.add(btnEliminarPaciente);
@@ -384,7 +429,7 @@ public class PrincipalPanel {
 			}
 		}
 	}
-	
+
 	public JFrame getFrmFisiplus() {
 		return frmFisiplus;
 	}
@@ -438,6 +483,7 @@ public class PrincipalPanel {
 		public void componentShown(ComponentEvent e) {
 			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
 			cl.show(pnlAcciones, "Acciones_Pacientes");
+			
 		}
 	}
 	private class ScrollPaneHistorialesComponentListener extends ComponentAdapter {
@@ -450,6 +496,104 @@ public class PrincipalPanel {
 		public void componentShown(ComponentEvent e) {
 			CardLayout cl = (CardLayout)(pnlAcciones.getLayout());
 			cl.show(pnlAcciones, "Acciones_Personal");
+		}
+	}
+	private class BtnEliminarPacienteActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent arg0) {
+			MiModeloTabla modeloTabla = (MiModeloTabla) miTabla.getModel();
+			int n= miTabla.getSelectedRow();
+			System.out.println(n);
+			if (n != -1){
+				EliminarPaciente(n);
+				modeloTabla.eliminaFila(miTabla.getSelectedRow());
+			}
+			modeloTabla.fireTableDataChanged();
+			
+
+		}
+	}
+	private static ArrayList <Paciente> leerTodoPacientes(){
+		Conexion con = new Conexion();
+		ResultSet pacientes = null;
+		
+		try{
+			PreparedStatement pstm = con.getConnection().prepareStatement("SELECT * FROM Pacientes");
+			pacientes = pstm.executeQuery();
+			TPacientes  = new ArrayList <Paciente>();
+			
+			int i = 0;
+			
+			while(pacientes.next()){
+				Paciente paciente = new Paciente(pacientes.getString("Nombre"), pacientes.getString("Apellidos"), pacientes.getString("DNI"), pacientes.getString("Sexo"), 
+						pacientes.getString("CorreoElectronico"), pacientes.getString("FechaNacimiento"), pacientes.getString("Telefono"), 
+						pacientes.getString("Direccion"), pacientes.getString("Poblacion"), 
+						pacientes.getString("CP"), pacientes.getString("Mutua"), pacientes.getString("FechaAlta"), pacientes.getString("NumTarjeta"));
+				
+				TPacientes.add(paciente);
+			}
+			pacientes.close();
+			con.desconectar();
+			
+		}catch(SQLException e){
+			System.out.println(e);
+		}
+		
+		return TPacientes;
+	}
+
+	private void EliminarPaciente(int n){
+		Conexion con = new Conexion();
+		MiModeloTabla modeloTabla = (MiModeloTabla) miTabla.getModel();
+		Object aux = modeloTabla.getValueAt(n, 1);
+		try{
+			Statement pstm = con.getConnection().createStatement();
+			pstm.executeUpdate("DELETE FROM Pacientes WHERE Apellidos = '"+aux+"'");
+			pstm.close();
+		}catch(SQLException e){
+			System.out.println("Error al borrar de la base de datos: "+e);
+		}
+		con.desconectar();
+	}
+
+	private void CargarUsuario(){
+		Conexion con = new Conexion();
+		ResultSet usuarios = null;
+		ResultSet per = null;
+		
+		try{
+			PreparedStatement pstm = con.getConnection().prepareStatement("SELECT * FROM Registro");
+			usuarios = pstm.executeQuery();
+			TUsuarios = new ArrayList();
+			
+			int i = 0;
+			
+			while(usuarios.next()){
+				TUsuarios.add(usuarios.getString("Fisio"));
+			}
+			
+			/* Mostramos el ultimo usuario logueado */
+			String userActual = (String) TUsuarios.get(TUsuarios.size()-2);
+			lblUsertimesession.setText(userActual);
+			
+			PreparedStatement pstm2 = con.getConnection().prepareStatement("SELECT * FROM Fisioterapeutas WHERE Usuario = '"+userActual+"'");
+			per = pstm2.executeQuery();
+			
+			while(per.next()){			
+				TUsuarios.add(per.getString("Nombre"));
+				TUsuarios.add(per.getString("Apellidos"));
+				TUsuarios.add(per.getString("Id"));
+			}
+			
+			String nombreActual = (String) TUsuarios.get(TUsuarios.size()-3);
+			String apellidoActual = (String) TUsuarios.get(TUsuarios.size()-2);
+			String idActual = (String) TUsuarios.get(TUsuarios.size()-1);
+			
+			lblUsername.setText(nombreActual);
+			lblUserlastname.setText(apellidoActual);
+			lblUserid.setText(idActual);
+			
+		}catch(SQLException e){
+			System.out.println(e);
 		}
 	}
 }
