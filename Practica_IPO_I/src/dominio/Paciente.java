@@ -1,16 +1,17 @@
-package dominio;
+package Dominio;
 
 public class Paciente extends Persona {
-	public Paciente(String nombre, String apellidos, String password,
+	public Paciente(String nombre, String apellidos, 
 			String dni, String sexo, String email, String fechaNacimiento,
-			int telefono, String direccion, String poblacion, String codPostal,
+			String telefono, String direccion, String poblacion, String codPostal,
 			String mutua, String fechaAlta, String numTarjeta) {
-		super(nombre, apellidos, password, dni, sexo, email, fechaNacimiento,
+		super(nombre, apellidos, dni, sexo, email, fechaNacimiento,
 				telefono, direccion, poblacion, codPostal);
 		this.mutua = mutua;
 		this.fechaAlta = fechaAlta;
 		this.numTarjeta = numTarjeta;
 	}
+	
 	private String mutua;
 	private String fechaAlta;
 	private String numTarjeta;

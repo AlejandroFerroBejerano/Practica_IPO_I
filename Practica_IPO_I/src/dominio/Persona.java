@@ -1,26 +1,23 @@
-package dominio;
+package Dominio;
 
 public class Persona {
 	private int id;
 	private String nombre;
 	private String apellidos;
-	private String password;
 	private String dni;
 	private String sexo;
 	private String email;
 	private String fechaNacimiento;
-	private int telefono;
+	private String telefono;
 	private String direccion;
 	private String poblacion;
 	private String codPostal;
 	
-	public Persona(String nombre, String apellidos, String password,
-			String dni, String sexo, String email, String fechaNacimiento,
-			int telefono, String direccion, String poblacion, String codPostal) {
+	public Persona(String nombre, String apellidos, String dni, String sexo, String email, String fechaNacimiento,
+			String telefono, String direccion, String poblacion, String codPostal) {
 		super();
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		this.password = password;
 		this.dni = dni;
 		this.sexo = sexo;
 		this.email = email;
@@ -48,12 +45,6 @@ public class Persona {
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
 	public String getDni() {
 		return dni;
 	}
@@ -78,10 +69,10 @@ public class Persona {
 	public void setFechaNacimiento(String fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
-	public int getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 	public String getDireccion() {
