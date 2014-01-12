@@ -1,5 +1,5 @@
 
-package Presentacion;
+package presentacion;
 
 import java.awt.EventQueue;
 
@@ -64,9 +64,9 @@ import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
-import Dominio.Paciente;
-import Dominio.Persona;
-import Persistencia.Conexion;
+import dominio.Paciente;
+import dominio.Persona;
+import persistencia.Conexion;
 
 @SuppressWarnings("unused")
 public class PrincipalPanel {
@@ -89,7 +89,7 @@ public class PrincipalPanel {
 	private JLabel lblUsername;
 	private JLabel lblApellidos;
 	private JLabel lblIdusuario;
-	private JLabel lblTiempoConectado;
+	private JLabel lblLastUserConectado;
 	private JLabel lblUserlastname;
 	private JLabel lblUserid;
 	private JLabel lblUsertimesession;
@@ -100,15 +100,13 @@ public class PrincipalPanel {
 	private JPanel pnlAcciones_Historias;
 	private JPanel pnlAcciones_Personal;
 	private JButton btnAñadirPacientes;
-	private JButton btnConsultarResultados;
-	private JButton btnProgramarPruebas;
+	private JButton btnEditarUsuario;
 	private JButton btnConsultarHistorial_1;
 	private JButton btnEliminarPaciente;
 	private JButton btnConsultarHistorial_2;
 	private JButton btnEliminarHistorial;
 	private JButton btnAnadirPersonal;
 	private JButton btnEditarDatos;
-	private JButton btnVerLogPersonal;
 	private JButton btnEliminarPersonal;
 	private JScrollPane scrollPanePacientes;
 	private JScrollPane scrollPaneHistoriales;
@@ -268,12 +266,12 @@ public class PrincipalPanel {
 				pnlUserSession.add(lblUserid, gbc_lblUserid);
 			}
 			{
-				lblTiempoConectado = new JLabel("Tiempo Conectado: ");
-				GridBagConstraints gbc_lblTiempoConectado = new GridBagConstraints();
-				gbc_lblTiempoConectado.insets = new Insets(0, 0, 0, 5);
-				gbc_lblTiempoConectado.gridx = 6;
-				gbc_lblTiempoConectado.gridy = 0;
-				pnlUserSession.add(lblTiempoConectado, gbc_lblTiempoConectado);
+				lblLastUserConectado = new JLabel("Último Acceso:");
+				GridBagConstraints gbc_lblLastUserConectado = new GridBagConstraints();
+				gbc_lblLastUserConectado.insets = new Insets(0, 0, 0, 5);
+				gbc_lblLastUserConectado.gridx = 6;
+				gbc_lblLastUserConectado.gridy = 0;
+				pnlUserSession.add(lblLastUserConectado, gbc_lblLastUserConectado);
 			}
 			{
 				lblUsertimesession = new JLabel("");
@@ -353,22 +351,16 @@ public class PrincipalPanel {
 						pnlAcciones_Pacientes.add(btnAñadirPacientes);
 					}
 					{
-						btnConsultarResultados = new JButton("Consultar Resultados");
-						btnConsultarResultados.setBounds(557, 11, 185, 41);
-						btnConsultarResultados.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/See_icon.png")));
-						pnlAcciones_Pacientes.add(btnConsultarResultados);
-					}
-					{
 						btnConsultarHistorial_1 = new JButton("Consultar Historial");
-						btnConsultarHistorial_1.setBounds(10, 11, 185, 41);
+						btnConsultarHistorial_1.setBounds(182, 11, 185, 41);
 						btnConsultarHistorial_1.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/Folder Open.png")));
 						pnlAcciones_Pacientes.add(btnConsultarHistorial_1);
 					}
 					{
-						btnProgramarPruebas = new JButton("Programar Pruebas");
-						btnProgramarPruebas.setBounds(281, 11, 185, 41);
-						btnProgramarPruebas.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/ico-calendar.png")));
-						pnlAcciones_Pacientes.add(btnProgramarPruebas);
+						btnEditarUsuario = new JButton("Editar Paciente");
+						btnEditarUsuario.setBounds(380, 11, 185, 41);
+						btnEditarUsuario.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/File_edit.png")));
+						pnlAcciones_Pacientes.add(btnEditarUsuario);
 					}
 					{
 						btnEliminarPaciente = new JButton("Eliminar Paciente");
@@ -409,15 +401,9 @@ public class PrincipalPanel {
 					}
 					{
 						btnEditarDatos = new JButton("Editar Datos");
-						btnEditarDatos.setBounds(281, 11, 185, 41);
+						btnEditarDatos.setBounds(277, 11, 185, 41);
 						btnEditarDatos.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/File_edit.png")));
 						pnlAcciones_Personal.add(btnEditarDatos);
-					}
-					{
-						btnVerLogPersonal = new JButton("Ver Log Personal");
-						btnVerLogPersonal.setBounds(10, 11, 185, 41);
-						btnVerLogPersonal.setIcon(new ImageIcon(PrincipalPanel.class.getResource("/Recursos/See_icon.png")));
-						pnlAcciones_Personal.add(btnVerLogPersonal);
 					}
 					{
 						btnEliminarPersonal = new JButton("Eliminar Personal");
