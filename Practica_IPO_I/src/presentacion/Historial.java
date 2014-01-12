@@ -52,6 +52,8 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Historial extends JDialog {
 	
@@ -67,7 +69,6 @@ public class Historial extends JDialog {
 	private static Cursor cursorArrow;
 	private int x, y;
 	
-	private JDialog cat;
 	private JDialog frame;
 	private final JPanel contentPanel = new JPanel();
 	private JButton cancelButton;
@@ -84,6 +85,7 @@ public class Historial extends JDialog {
 	private JScrollPane scrollPaneObservaciones;
 	private JTextArea textAreaObservaciones;
 	private JScrollPane scrollPanePruebas;
+	@SuppressWarnings("rawtypes")
 	private JList list;
 	private JButton btnAadirPrueba;
 	private JPanel pnlAccionesPruebas;
@@ -98,7 +100,8 @@ public class Historial extends JDialog {
 	private DefaultListModel MiModeloLista = new DefaultListModel();
 	private JButton btnArrow;
 	private JButton btnGuardar;
-	
+	private static Historial dialog;
+	private JButton btnEditarPrueba;
 	
 	
 	/**
@@ -106,7 +109,7 @@ public class Historial extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			Historial dialog = new Historial();
+			dialog = new Historial();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -118,11 +121,12 @@ public class Historial extends JDialog {
 	 * Create the dialog.
 	 */
 	public Historial() {
+		addWindowListener(new ThisWindowListener());
 		
 		setTitle("Historial - Fisiplus");
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Historial.class.getResource("/Recursos/hospital-icon.png")));
-		setBounds(100, 100, 860, 460);
+		setBounds(100, 100, 860, 508);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -322,9 +326,16 @@ public class Historial extends JDialog {
 			}
 			{
 				btnBorrarPrueba = new JButton("Borrar Prueba");
-				btnBorrarPrueba.setBounds(10, 57, 185, 41);
+				btnBorrarPrueba.setBounds(10, 107, 185, 41);
 				btnBorrarPrueba.setIcon(new ImageIcon(Historial.class.getResource("/Recursos/Trash.png")));
 				pnlAccionesPruebas.add(btnBorrarPrueba);
+			}
+			{
+				btnEditarPrueba = new JButton("Agregar Resultados");
+				btnEditarPrueba.setSelectedIcon(new ImageIcon(Historial.class.getResource("/Recursos/File_edit.png")));
+				btnEditarPrueba.setIcon(new ImageIcon(Historial.class.getResource("/Recursos/cargarComentarios.png")));
+				btnEditarPrueba.setBounds(10, 55, 185, 41);
+				pnlAccionesPruebas.add(btnEditarPrueba);
 			}
 		}
 		{
@@ -355,6 +366,7 @@ public class Historial extends JDialog {
 			buttonPane.setLayout(gbl_buttonPane);
 			{
 				cancelButton = new JButton("Cancelar");
+				cancelButton.addActionListener(new CancelButtonActionListener());
 				cancelButton.setIcon(new ImageIcon(Historial.class.getResource("/Recursos/back_button.png")));
 				cancelButton.setActionCommand("Cancel");
 			}
@@ -366,6 +378,7 @@ public class Historial extends JDialog {
 			buttonPane.add(cancelButton, gbc_cancelButton);
 			{
 				okButton = new JButton("Aceptar");
+				okButton.addActionListener(new OkButtonActionListener());
 				okButton.setIcon(new ImageIcon(Historial.class.getResource("/Recursos/accept.png")));
 				okButton.setActionCommand("OK");
 				getRootPane().setDefaultButton(okButton);
@@ -453,12 +466,32 @@ public class Historial extends JDialog {
 				
 				try{		
 				    ImageIO.write(img, "png", new File(file.getAbsolutePath()));
-				    JOptionPane.showMessageDialog(frame, "Archivo guardado correctamente.", "Seminario 2", JOptionPane.PLAIN_MESSAGE);
+				    JOptionPane.showMessageDialog(frame, "Archivo guardado correctamente.", "Guardar Imagen Prueba", JOptionPane.INFORMATION_MESSAGE);
 				}catch (IOException ioe){
-					JOptionPane.showMessageDialog(frame, "No se ha podido guardar el archivo.", "Seminario 2", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "No se ha podido guardar el archivo.", "Guardar Imagen Prueba", JOptionPane.ERROR_MESSAGE);
 				}
 			}else
-				System.out.println("Se ha cancelado la acci�n.");
+				JOptionPane.showMessageDialog(frame, "Se ha cancelado la acción", "Guardar Imagen Prueba", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	private class CancelButtonActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			/* Llamamos al panel principal */
+			PrincipalPanel panel = new PrincipalPanel();
+			panel.getFrmFisiplus().setVisible(true);
+			dialog.dispose();
+		}
+	}
+	private class OkButtonActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			PrincipalPanel panel = new PrincipalPanel();
+			panel.getFrmFisiplus().setVisible(true);
+			dialog.dispose();
+		}
+	}
+	private class ThisWindowListener extends WindowAdapter {
+		public void windowClosing(WindowEvent e) {
+			JOptionPane.showMessageDialog(frame, "Gracias por utilizar nuestra aplicación", "Cerrar la aplicación", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }
