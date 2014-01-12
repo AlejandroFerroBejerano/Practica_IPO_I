@@ -1,4 +1,4 @@
-package persistencia;
+package Persistencia;
 import java.sql.*;
 import javax.swing.JOptionPane;
 
